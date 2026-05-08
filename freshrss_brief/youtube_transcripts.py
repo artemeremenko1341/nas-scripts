@@ -7,6 +7,11 @@
 Запускается из daily_collect.sh после freshrss_brief.
 
 Кеш: проверка по video_id во всех .md файлах в Raw/youtube_transcripts/ (любая дата).
+
+Exit codes:
+  0 — нет транзиентных ошибок (всё ок, или только permanent skips: нет субтитров,
+      видео удалено и т.п. — это не сбой пайплайна)
+  1 — реальные транзиентные ошибки (сеть, прокси) — есть смысл алертить
 '''
 import json, os, re, sys, glob
 from datetime import date
@@ -15,6 +20,26 @@ from pathlib import Path
 PROXY = 'http://127.0.0.1:20171'
 RAW_ROOT = Path('/volume1/obsidian/Raw/youtube_transcripts')
 DAILY_DATA = Path('/volume1/homes/artemere-7601341/scripts/daily_data')
+
+# Постоянные провалы (не алертить, это свойство видео, а не сбой системы)
+try:
+    from youtube_transcript_api._errors import (
+        TranscriptsDisabled, NoTranscriptFound, VideoUnavailable,
+    )
+    PERMANENT_EXC = (TranscriptsDisabled, NoTranscriptFound, VideoUnavailable)
+except ImportError:
+    PERMANENT_EXC = ()
+
+PERMANENT_MARKERS = (
+    'Subtitles are disabled',
+    'No transcripts',
+    'no transcripts',
+    'Video unavailable',
+    'video is no longer available',
+    'Video is unavailable',
+    'This video is unavailable',
+)
+
 
 def extract_video_id(url):
     m = re.search(r'(?:v=|youtu\.be/|/embed/)([A-Za-z0-9_-]{11})', url)
@@ -37,6 +62,9 @@ def find_existing(video_id):
     return None
 
 def fetch_transcript(video_id):
+    '''Возвращает (segments, info, is_permanent_skip).
+    segments=None при ошибке. is_permanent_skip=True если ошибка постоянная
+    (нет субтитров, видео удалено) — wrapper не должен считать это сбоем.'''
     from youtube_transcript_api import YouTubeTranscriptApi
     from youtube_transcript_api.proxies import GenericProxyConfig
     api = YouTubeTranscriptApi(proxy_config=GenericProxyConfig(
@@ -46,9 +74,15 @@ def fetch_transcript(video_id):
         segments = [(s.start, s.duration, s.text) for s in t]
         full_text = ' '.join([s[2] for s in segments])
         lang = 'ru' if any(c in full_text[:300] for c in 'абвгдежзийклмнопрстуфхцчшщъыьэюя') else 'en'
-        return segments, lang
+        return segments, lang, False
+    except PERMANENT_EXC as e:
+        return None, str(e).split('\n')[0], True
     except Exception as e:
-        return None, str(e)
+        msg = str(e)
+        is_permanent = any(m in msg for m in PERMANENT_MARKERS)
+        # короткое сообщение для лога
+        short = msg.split('\n')[0]
+        return None, short, is_permanent
 
 def format_paragraph_block(segments, video_id, paragraph_seconds=60):
     '''Группирует segments в абзацы примерно paragraph_seconds длинной.
@@ -63,12 +97,10 @@ def format_paragraph_block(segments, video_id, paragraph_seconds=60):
         if not current:
             para_start = start
         current.append(text.strip())
-        # закрываем абзац когда прошло >= paragraph_seconds
         if start + dur - para_start >= paragraph_seconds:
             paragraphs.append((para_start, ' '.join(current)))
             current = []
 
-    # Последний хвост
     if current:
         paragraphs.append((para_start, ' '.join(current)))
 
@@ -83,7 +115,6 @@ def format_paragraph_block(segments, video_id, paragraph_seconds=60):
             label = f'{m:02d}:{s:02d}'
         ts_int = int(ts)
         link = f'[{label}](https://www.youtube.com/watch?v={video_id}&t={ts_int}s)'
-        # очистка лишних пробелов внутри
         text = re.sub(r'\s+', ' ', text).strip()
         out.append(f'**{link}** {text}')
 
@@ -144,32 +175,37 @@ def main():
 
     fetched = 0
     cached = 0
-    failed = 0
+    skipped = 0   # permanent: нет субтитров, видео удалено и т.п.
+    failed = 0    # transient: сеть, прокси
     for p in youtube_posts:
         vid = extract_video_id(p['tg_url'])
         if not vid:
-            print(f'  SKIP: cannot extract video_id from {p["tg_url"]}')
-            failed += 1
+            print(f'  SKIP cannot extract video_id from {p["tg_url"]}')
+            skipped += 1
             continue
 
         existing = find_existing(vid)
         if existing:
-            print(f'  CACHE: {vid} → {existing}')
+            print(f'  CACHE {vid}: {existing}')
             cached += 1
             continue
 
-        segments, lang_or_err = fetch_transcript(vid)
+        segments, info, is_permanent = fetch_transcript(vid)
         if segments is None:
-            print(f'  FAIL {vid}: {lang_or_err}')
-            failed += 1
+            tag = 'SKIP' if is_permanent else 'FAIL'
+            print(f'  {tag} {vid}: {info}')
+            if is_permanent:
+                skipped += 1
+            else:
+                failed += 1
             continue
 
         path = write_md(folder, vid, p['title'], p['feed'], p['tg_url'],
-                        p['fresh_url'], target_date, segments, lang_or_err)
+                        p['fresh_url'], target_date, segments, info)
         print(f'  OK {vid}: {len(segments)} segments → {path.name}')
         fetched += 1
 
-    print(f'\nResult: fetched={fetched} cached={cached} failed={failed}')
+    print(f'\nResult: fetched={fetched} cached={cached} skipped={skipped} failed={failed}')
     return 0 if failed == 0 else 1
 
 if __name__ == '__main__':
