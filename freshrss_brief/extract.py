@@ -51,7 +51,7 @@ BUCKETS = {
     'rental': {'RENTALL | Аренда видео и фототехники | Москва | СПб'},
     'school': {'Школа «Летово»', 'Школа «Летово Джуниор»'},
     'politics': {'Vladimir Pastukhov', 'Politics with Vladimir Pastukhov', 'ПАРТИЯ ЯБЛОКО',
-                 'Гражданская инициатива', '🇷🇺 BafistaRU 🇷🇺'},
+                 'Гражданская инициатива', '🇷🇺 BafistaRU 🇷🇺', 'Новая газета'},
     'clubs': {'LANGAME.ru | Про компьютерные клубы',
               'LANGAME Software | Для компьютерных клубов',
               'COLIZEUM | Бизнес',
@@ -64,10 +64,13 @@ def normalize_feed(name):
     name = html.unescape(name)
     return name.replace(' - Telegram Channel','').replace(' - YouTube',' (YT)')
 
-def bucket_of(feed, feed_url=''):
+def bucket_of(feed, feed_url='', category_id=None):
     # YouTube override - любой канал из RSSHub /youtube/ или нативного YouTube RSS
     if '/youtube/' in feed_url or 'youtube.com/feeds' in feed_url:
         return 'youtube'
+    # Podcasts override - всё в категории FreshRSS "Podcasts" (id=11)
+    if category_id == 11:
+        return 'podcasts'
     for b, s in BUCKETS.items():
         if feed in s:
             return b
@@ -88,7 +91,7 @@ def main():
     subprocess.run([DOCKER, 'cp', DB_SRC_CONTAINER, DB_TMP], check=True)
     c = sqlite3.connect(DB_TMP).cursor()
 
-    q = '''SELECT e.id, e.id_feed, f.name, e.title, e.content, e.link, f.url
+    q = '''SELECT e.id, e.id_feed, f.name, e.title, e.content, e.link, f.url, f.category
            FROM entry e JOIN feed f ON f.id = e.id_feed
            WHERE date(e.date,"unixepoch","+3 hours") = ?
            ORDER BY f.name, e.date DESC'''
@@ -99,7 +102,7 @@ def main():
     for r in c.execute(q, (target,)):
         feed = normalize_feed(r[2])
         feeds_seen.add(feed)
-        b = bucket_of(feed, r[6])
+        b = bucket_of(feed, r[6], category_id=r[7])
         post = {
             'feed': feed,
             'feed_id': r[1],

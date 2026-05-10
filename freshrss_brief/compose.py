@@ -143,32 +143,115 @@ def youtube_section(items, target_date):
         "## \U0001F3A5 YouTube за вчера",
         "",
         "> 🟡 = pending (требуется ручное summary). 🟢 = watch / 🔴 = skip обновляется при ручной обработке.",
+        "> Ссылки ведут на локальные транскрипты в Obsidian (Raw/youtube_transcripts/).",
         "",
     ]
-    raw_dir = RAW_YT / target_date
+    from datetime import datetime, timedelta
     yt_by_title = {}
-    if raw_dir.exists():
+    yt_by_video_id = {}
+    try:
+        td = datetime.strptime(target_date, "%Y-%m-%d").date()
+    except Exception:
+        td = None
+    search_dirs = [target_date]
+    if td:
+        for delta in (1, 2):
+            search_dirs.append((td - timedelta(days=delta)).isoformat())
+    for sd in search_dirs:
+        raw_dir = RAW_YT / sd
+        if not raw_dir.exists():
+            continue
         for f in sorted(raw_dir.glob("*.md")):
             try:
                 head = f.read_text(encoding="utf-8", errors="ignore")[:2000]
-                m = re.search(r'^title:\s*"?([^"\n]+)"?\s*$', head, re.M)
-                if m:
-                    yt_by_title[m.group(1).strip()] = f
+                tm = re.search(r'^title:\s*"?([^"\n]+)"?\s*$', head, re.M)
+                vm = re.search(r'^video_id:\s*([\w\-]+)\s*$', head, re.M)
+                if tm:
+                    title_norm = tm.group(1).strip().replace("\xa0", " ")
+                    yt_by_title.setdefault(title_norm, f)
+                if vm:
+                    yt_by_video_id.setdefault(vm.group(1).strip(), f)
             except Exception:
                 pass
     for it in items:
         title = clean_title(it.get("title", ""))
         feed = it.get("feed", "")
-        f = yt_by_title.get(it.get("title", "").strip())
+        rss_title = it.get("title", "").strip().replace("\xa0", " ")
+        f = yt_by_title.get(rss_title)
+        if not f:
+            url = it.get("url", "") or it.get("link", "") or ""
+            vid_m = re.search(r'(?:v=|youtu\.be/|/embed/|/shorts/)([\w\-]{11})', url)
+            if vid_m:
+                f = yt_by_video_id.get(vid_m.group(1))
         if f:
-            rel = f.relative_to(VAULT).as_posix()
-            rel_url = urllib.parse.quote(rel, safe="/")
-            lines.append("- 🟡 **[" + title + "](" + rel_url + ")** — *Канал: " + feed + ". Транскрипт сохранён, требуется ручное summary.*")
+            wiki = f.stem.replace("|", "\\|")
+            yt_url = it.get("url") or it.get("link") or ""
+            yt_part = " · [▶ YouTube](" + yt_url + ")" if yt_url else ""
+            lines.append("- 🟡 [[" + wiki + "|" + title + "]] — *Канал: " + feed + yt_part + "*")
         else:
             lines.append("- 🟡 **[" + title + "](" + it["fresh_url"] + ")** — *Канал: " + feed + ". Транскрипт не найден локально, fallback на FreshRSS.*")
     lines.append("")
     return "\n".join(lines)
 
+def podcast_section(items, target_date):
+    """Section for podcasts. Looks for transcripts in Raw/podcast_transcripts/{target_date}/ and
+    earlier days, matches by episode_id (Spotify/Apple) or by title.
+    Wiki-link to local Obsidian transcript file when found."""
+    if not items:
+        return ""
+    lines = [
+        "## \U0001F399 Подкасты за вчера",
+        "",
+        "> 🟡 = pending. Ссылки ведут на локальные транскрипты в Obsidian.",
+        "",
+    ]
+    from datetime import datetime, timedelta
+    pod_root = VAULT / "Raw" / "podcast_transcripts"
+    pod_by_title = {}
+    pod_by_episode_id = {}
+    try:
+        td = datetime.strptime(target_date, "%Y-%m-%d").date()
+    except Exception:
+        td = None
+    search_dirs = [target_date]
+    if td:
+        for delta in (1, 2):
+            search_dirs.append((td - timedelta(days=delta)).isoformat())
+    for sd in search_dirs:
+        raw_dir = pod_root / sd
+        if not raw_dir.exists():
+            continue
+        for f in sorted(raw_dir.glob("*.md")):
+            try:
+                head = f.read_text(encoding="utf-8", errors="ignore")[:2000]
+                tm = re.search(r'^title:\s*"?([^"\n]+)"?\s*$', head, re.M)
+                em = re.search(r'^episode_id:\s*([\w\-]+)\s*$', head, re.M)
+                if tm:
+                    title_norm = tm.group(1).strip().replace("\xa0", " ")
+                    pod_by_title.setdefault(title_norm, f)
+                if em:
+                    pod_by_episode_id.setdefault(em.group(1).strip(), f)
+            except Exception:
+                pass
+    for it in items:
+        title = clean_title(it.get("title", ""))
+        feed = it.get("feed", "")
+        rss_title = it.get("title", "").strip().replace("\xa0", " ")
+        f = pod_by_title.get(rss_title)
+        if not f:
+            url = it.get("url", "") or it.get("link", "") or ""
+            sp_m = re.search(r'open\.spotify\.com/episode/([\w]{22})', url)
+            if sp_m:
+                f = pod_by_episode_id.get(sp_m.group(1))
+        if f:
+            wiki = f.stem.replace("|", "\\|")
+            ep_url = it.get("url") or it.get("link") or ""
+            ep_part = " · [▶ Открыть оригинал](" + ep_url + ")" if ep_url else ""
+            lines.append("- 🟡 [[" + wiki + "|" + title + "]] — *Подкаст: " + feed + ep_part + "*")
+        else:
+            lines.append("- 🟡 **[" + title + "](" + it["fresh_url"] + ")** — *Подкаст: " + feed + ". Транскрипт не найден локально, fallback на FreshRSS.*")
+    lines.append("")
+    return "\n".join(lines)
 
 def index_section(buckets, total):
     lines = [
@@ -284,8 +367,14 @@ def main():
 
     yt = buckets.get("youtube", [])
     ys = youtube_section(yt, target)
+    pods = buckets.get("podcasts", [])
+    ps = podcast_section(pods, target)
     if ys:
         out.append(ys)
+        out.append("---\n")
+
+    if ps:
+        out.append(ps)
         out.append("---\n")
 
     out.append(index_section(buckets, total))

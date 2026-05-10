@@ -84,6 +84,12 @@ else
     push $TOK_YT down "exit=$?"
 fi
 
+if run "podcast_batch" python3 "/volume1/homes/artemere-7601341/scripts/freshrss_brief/podcast_batch.py"; then
+    :
+else
+    :  # podcast batch is non-critical (Spotify-exclusives, network), tracked via daily_collect msg
+fi
+
 if run "daily_brief_compose" python3 "/volume1/homes/artemere-7601341/scripts/freshrss_brief/compose.py"; then
     :
 else
@@ -100,5 +106,7 @@ echo "=== Done $(date -Iseconds) ===" >> "$LOG"
 if [ ${#FAILS[@]} -eq 0 ]; then
     push $TOK_DAILY up OK
 else
-    push $TOK_DAILY down "FAIL: ${FAILS[*]}"
+    # Pipeline дошёл до конца. Дочерние мониторы (TOK_YT, TOK_SHEETS итд) показывают DOWN сами.
+    # daily_collect остаётся UP, msg показывает какие шаги упали для контекста.
+    push $TOK_DAILY up "completed with ${#FAILS[@]} non-critical fail(s): ${FAILS[*]}"
 fi

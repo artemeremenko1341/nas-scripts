@@ -124,7 +124,10 @@ def fetch_l1_notegpt(video_id):
             continue
 
     # Strip "_auto" suffix from language_code
-    lang = (payload.get('language_code') or lang_key or 'en').replace('_auto', '').replace('-auto', '')
+    lang_raw = payload.get('language_code') or lang_key or 'en'
+    if isinstance(lang_raw, list):
+        lang_raw = lang_raw[0] if lang_raw else 'en'
+    lang = str(lang_raw).replace('_auto', '').replace('-auto', '')
     return segments, lang, 'ok'
 
 
