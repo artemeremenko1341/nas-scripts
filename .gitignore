@@ -6,8 +6,8 @@ openclaw/config/google_credentials.json
 openclaw/config/google_token.json
 
 # Runtime data
-daily_data/
-data/
+/daily_data/
+/data/
 openclaw/daily_data/
 openclaw/data/*
 openclaw/logs/
