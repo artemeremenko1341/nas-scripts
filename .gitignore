@@ -9,7 +9,7 @@ openclaw/config/google_token.json
 daily_data/
 data/
 openclaw/daily_data/
-openclaw/data/
+openclaw/data/*
 openclaw/logs/
 
 # Logs
@@ -39,4 +39,6 @@ Thumbs.db
 .vscode/
 
 # Whitelist - sync state for tasknotes (small, useful as backup)
+
+# Whitelist - sync state (small JSON, useful as backup)
 !openclaw/data/tasknotes_sync_state.json
