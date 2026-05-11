@@ -56,14 +56,47 @@ def load_week(mon: date, fri: date):
 
 
 def send_tg(text):
-    import urllib.request
+    # api.telegram.org is blocked from this NAS WAN. Two-step fallback:
+    #   1) curl --proxy via local v2raya (canonical path, same as notify_brief.sh).
+    #   2) curl --resolve to known-good TG IP (emergency, in case v2raya route flaps).
+    # Override defaults via env: TG_HTTP_PROXY, TG_API_IPS (comma-sep).
+    import subprocess, os
+    payload = json.dumps({"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"})
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    body = json.dumps({"chat_id": CHAT_ID, "text": text, "parse_mode": "HTML"}).encode()
-    req = urllib.request.Request(url, data=body,
-                                 headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=15) as r:
-        return json.loads(r.read())
+    errors = []
 
+    proxy = os.environ.get("TG_HTTP_PROXY", "http://127.0.0.1:20171")
+    try:
+        r = subprocess.run(
+            ["curl", "-fsS", "-m", "15", "--proxy", proxy,
+             "-X", "POST", url,
+             "-H", "Content-Type: application/json",
+             "-d", payload],
+            capture_output=True, text=True, timeout=20,
+        )
+        if r.returncode == 0:
+            return json.loads(r.stdout)
+        errors.append(f"proxy {proxy}: rc={r.returncode} {r.stderr.strip()[:120]}")
+    except Exception as e:
+        errors.append(f"proxy {proxy}: {type(e).__name__}: {e}")
+
+    for ip in [s.strip() for s in os.environ.get("TG_API_IPS", "149.154.167.220").split(",") if s.strip()]:
+        try:
+            r = subprocess.run(
+                ["curl", "-fsS", "-m", "10",
+                 "--resolve", f"api.telegram.org:443:{ip}",
+                 "-X", "POST", url,
+                 "-H", "Content-Type: application/json",
+                 "-d", payload],
+                capture_output=True, text=True, timeout=15,
+            )
+            if r.returncode == 0:
+                return json.loads(r.stdout)
+            errors.append(f"resolve {ip}: rc={r.returncode} {r.stderr.strip()[:120]}")
+        except Exception as e:
+            errors.append(f"resolve {ip}: {type(e).__name__}: {e}")
+
+    raise RuntimeError("send_tg failed via all paths: " + " | ".join(errors))
 
 def main():
     today = datetime.now().date()

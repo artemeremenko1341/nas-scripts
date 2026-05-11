@@ -37,3 +37,6 @@ Thumbs.db
 *~
 .idea/
 .vscode/
+
+# Whitelist - sync state for tasknotes (small, useful as backup)
+!openclaw/data/tasknotes_sync_state.json
