@@ -78,6 +78,8 @@ VIDEO_ID_RE = re.compile(r'(?:v=|youtu\.be/|/embed/|/shorts/)([A-Za-z0-9_-]{11})
 RSSHUB_PLAYLIST_RE = re.compile(r'/youtube/playlist/UU([A-Za-z0-9_-]{22})')
 # Native YT RSS URL
 RSSHUB_CHANNEL_NATIVE_RE = re.compile(r'channel_id=UC([A-Za-z0-9_-]{22})')
+# Маркер ОРД (российский закон о рекламе) — erid: в теле = реклама, исключаем из брифинга
+RU_ADS_MARKER_RE = re.compile(r"erid\s*:", re.IGNORECASE)
 ATOM_NS = '{http://www.w3.org/2005/Atom}'
 YT_NS = '{http://www.youtube.com/xml/schemas/2015}'
 
@@ -123,6 +125,12 @@ def clean(s):
     s = html.unescape(s)
     s = re.sub(r'<[^>]+>', ' ', s)
     return re.sub(r'\s+', ' ', s).strip()
+
+
+def is_ru_ad(title, content):
+    """True если post содержит маркер ОРД ('erid:') — российский признак рекламы."""
+    blob = (title or "") + " " + (content or "")
+    return bool(RU_ADS_MARKER_RE.search(blob))
 
 
 def extract_video_id(url):
@@ -193,7 +201,11 @@ def fetch_channel_rss(channel_id):
 
 
 def main():
-    target = sys.argv[1] if len(sys.argv) > 1 else (date.today() - timedelta(days=1)).isoformat()
+    # Поддерживаем флаг --prefetch-only (для крон-таски 04:00/04:30/05:00):
+    # делает только YT prefetch (обновляет pub_cache), не пишет JSON и не трогает не-YT entries.
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    prefetch_only = "--prefetch-only" in sys.argv
+    target = args[0] if args else (date.today() - timedelta(days=1)).isoformat()
     out_dir = f'/volume1/homes/artemere-7601341/scripts/daily_data/{date.today().isoformat()}'
     os.makedirs(out_dir, exist_ok=True)
     out_path = f'{out_dir}/freshrss_brief.json'
@@ -238,6 +250,13 @@ def main():
 
     print(f'YT-prefetch done: {channels_fetched} channels OK, {channels_failed} failed, {new_resolves} new resolves, cache total {len(pub_cache)} (was {pre_run_cache_size})')
 
+    if prefetch_only:
+        save_pub_cache(pub_cache)
+        # Прохождение признаём успешным если хотя бы 1 канал OK (иначе крон тригерит retry в следующем слоте)
+        rc = 0 if channels_fetched > 0 else 1
+        print(f'PREFETCH-ONLY done (rc={rc})')
+        return rc
+
     # ===== ШАГ 2: Не-YT feed'ы — старый запрос по точной target-дате =====
     q_nonyt = '''SELECT e.id, e.id_feed, f.name, e.title, e.content, e.link, f.url, f.category
                  FROM entry e JOIN feed f ON f.id = e.id_feed
@@ -259,7 +278,13 @@ def main():
     total = 0
 
     # --- Non-YT entries ---
+    ru_ads_skipped = 0
     for r in c.execute(q_nonyt, (target,)):
+        title_raw = r[3] or ""
+        content_raw = r[4] or ""
+        if is_ru_ad(title_raw, content_raw):
+            ru_ads_skipped += 1
+            continue
         feed = normalize_feed(r[2])
         feeds_seen.add(feed)
         b = bucket_of(feed, r[6], category_id=r[7])
@@ -340,7 +365,7 @@ def main():
     with open(out_path, 'w') as f:
         json.dump(result_obj, f, ensure_ascii=False, indent=1)
     os.remove(DB_TMP)
-    print(f'OK: {total} posts from {len(feeds_seen)} feeds, target={target}, -> {out_path}')
+    print(f'OK: {total} posts from {len(feeds_seen)} feeds (ru-ads skipped: {ru_ads_skipped}), target={target}, -> {out_path}')
     return 0
 
 

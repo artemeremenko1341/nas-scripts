@@ -661,6 +661,16 @@ def main(dry=False):
                 v['fm']['tags'] = '[task]'
             write_md(v['path'], v['fm'], v['body'])
             state[new_t['id']] = {'path': str(v['path']), 'list': v['folder'], 'updated': new_t.get('updated', '')}
+            # FIX 2026-05-13: keep g_by_id consistent after push_new so step 3 (paired) does not treat just-created task as deleted-in-google
+            g_by_id[new_t['id']] = {
+                'id': new_t['id'],
+                'list_id': list_id,
+                'list_name': v['folder'],
+                'title': v['fm'].get('title', ''),
+                'notes': '',
+                'status': body.get('status', 'needsAction'),
+                'updated': new_t.get('updated', ''),
+            }
             actions['push_new'] += 1
             log(f'push_new: {v["path"].name} -> {v["folder"]} (id={new_t["id"]})')
         except Exception as e:
