@@ -3,7 +3,7 @@
     "path": "/volume1/obsidian/TaskNotes/На завтра/Посмотреть как считается Адеск и подбить все кассы, должны быть все правильно.md",
     "list": "На завтра",
     "updated": "2026-05-14T17:25:05.512Z",
-    "last_v_mtime": 1778779502.1406622
+    "last_v_mtime": 1778846701.365907
   },
   "ZzRGNXhCTXVBcmFzR2tSTg": {
     "path": "/volume1/obsidian/TaskNotes/На завтра/Отказать клиенту по расширенной выписке из налоговой.md",
@@ -646,12 +646,6 @@
     "updated": "2026-05-13T12:10:45.300Z",
     "last_v_mtime": 1778673839.0
   },
-  "VHBjY1VhSXU5QXVqV2xhRQ": {
-    "path": "/volume1/obsidian/TaskNotes/Недельные планы/Актуализировать наличные и финансовые остатки в Excel.md",
-    "list": "Недельные планы",
-    "updated": "2026-05-13T17:20:06.012Z",
-    "last_v_mtime": 1778692801.3587155
-  },
   "SUo3eGRYMEZKekNjUllNMQ": {
     "path": "/volume1/obsidian/TaskNotes/Сделанные/Подбить кассы в 1С (done) (done).md",
     "list": "Сделанные",
@@ -843,5 +837,395 @@
     "list": "На завтра",
     "updated": "2026-05-14T19:15:04.702Z",
     "last_v_mtime": 1778785812.0
+  },
+  "Sl9pVjg2aDF5MDZfQlBWVQ": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Купить салфетки на Озон.md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:47.712Z",
+    "last_v_mtime": 1778814604.7261798
+  },
+  "ZTlDc2xIT3RvNjBMdkZQeA": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Определиться с новым телефоном для закупки - серый под VPN и иностранные сервисы.md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:46.716Z",
+    "last_v_mtime": 1778814604.72818
+  },
+  "SHNRTVJMbURCVXMxU1A1cA": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Отказать клиенту по расширенной выписке из налоговой.md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:46.158Z",
+    "last_v_mtime": 1778814604.72818
+  },
+  "OWhLYUxGNmYwcmk2cU9fdg": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Sheets vs Adesk разбор скрипта, почему неправильно выгружает.md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:45.647Z",
+    "last_v_mtime": 1778814604.7291799
+  },
+  "SEpIdE5BYVNWcDkzaGVVNw": {
+    "path": "/volume1/obsidian/TaskNotes/На завтра/Посмотреть как считается Адеск и подбить все кассы, должны быть все правильно.md",
+    "list": "На завтра",
+    "updated": "2026-05-15T12:05:06.546Z",
+    "last_v_mtime": 1778846701.365907
+  },
+  "VDZaSU5wQVFOS0hlR1ZZaw": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Сбер дебет (не зачисляется, неправильный остаток РС АВ) — ждёт 1) Шишков закроет.md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:44.159Z",
+    "last_v_mtime": 1778814604.7321799
+  },
+  "a3ozcDctcWZlM2pQOUVrMQ": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Перенести все дни рождения в календарь.md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:43.153Z",
+    "last_v_mtime": 1778814604.73318
+  },
+  "bnZ1bmJfQkN0bXpYUFNBag": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Посмотреть чат друзей — проверить все ли дни рождения есть в контактах, добавить.md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:42.650Z",
+    "last_v_mtime": 1778814604.73418
+  },
+  "MTc3SlZfWF93cDJlVlpoWg": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Посмотреть кейсы мониторов от [[Еремин, Артем Александрович Ерёмина]].md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:41.616Z",
+    "last_v_mtime": 1778814604.73618
+  },
+  "bzJDVjlGWjd2UV93MzI2cA": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Забрать письма с почты.md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:41.085Z",
+    "last_v_mtime": 1778814604.73618
+  },
+  "cnhxQXdVcllFdWNBVHF0VQ": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Дебиторка СМР - разобрать (прислал Попов 31.03 в 10 21).md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:40.588Z",
+    "last_v_mtime": 1778814604.73718
+  },
+  "dWxLcmZDaGdrME1sQndXdw": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Посмотреть почему на сайте делают в сторону оплаты по яндексу.md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:40.060Z",
+    "last_v_mtime": 1778814604.73818
+  },
+  "MkF5akd6dWowVFI3RG54Zw": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Записаться на стрижку на субботу с детьми.md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:39.027Z",
+    "last_v_mtime": 1778814604.7391798
+  },
+  "b0hVYUg1d2tWeVpKSUduRw": {
+    "path": "/volume1/obsidian/TaskNotes/На сегодня/Посмотреть билеты на футбол Спартак - Краснодар.md",
+    "list": "На сегодня",
+    "updated": "2026-05-15T03:05:38.501Z",
+    "last_v_mtime": 1778814604.74018
+  },
+  "NDF2UlpsaXBBQkdzLW1JSg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - тестируем направления Ozon.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:22.909Z",
+    "last_v_mtime": 1778827101.0
+  },
+  "aFZKdlM3QzZTeVJoMDh6bw": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - с 18.05 Орехов руководителем склада.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:07.552Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "bzA2QWZFNnI5STVSeEdPSA": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - открыта услуга ночная выдача.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:06.583Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "MWNkWm9pYms2ZlA4d3prcQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Попов - видео по аналогам для Шишкова.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:13.911Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "RndjZ2ZCdkRRZjhMVXAtUg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Попов - расписать выдачу в городах без представительства.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:15.276Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "RTUxMDBQazZoTGpQS2JYdw": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - если в АКБ отошёл пластик подклеиваем.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:05.665Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "MzQweUVESlRiUUZLd0lBcA": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Попов - номер заказа по возврату залога через карту.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:14.817Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "eWhjNTJ5NnBnNkZWQmljLQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Попов - запустить Яндекс Директ на Краснодар к концу мая.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:14.369Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "UTQ3ejVzSWtMRDYxN2Rpdg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - все новые сотрудники подписывают NDA.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:04.764Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "QUVlQU44ZnRWQmNmZXNRZw": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Попов - тест-драйв Аксона согласовать доставку и видео.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:15.733Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "cUxOeElZOFJHczZLV25pUQ": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Переслать Орловецкому исполнительный, который из Тамбова прислали (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-15T06:30:30.716Z",
+    "last_v_mtime": 1778826349.0
+  },
+  "NHpndFNDbWg5X3hGM0JZSA": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - изучить договор СА Rentall и предложить дополнения.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:23.354Z",
+    "last_v_mtime": 1778827101.0
+  },
+  "Wnl2bm5uLUpoR3NUeE5fMQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Попов - оформить перевод в другой регион с Тихомировой.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:22.458Z",
+    "last_v_mtime": 1778827064.0
+  },
+  "c1ZnSEoyZ1dmc2psMTBfNg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - техника уволенного сотрудника может оставаться у нас.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:08.035Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "NEoxT2hoZTctOW9fYlhnWg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шурыгин - предложить идеи онбординга.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:20.242Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "QWRxMTdJVHVtTzB2UVV2eA": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - второй залоговый документ не вбивать вручную в 1С.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:05.240Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "cUt1WFNMVWVsdEN5dDBJbA": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шурыгин - уточнить у Яндекса автовыгрузку постов во все города.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:22.008Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "ZmhidFVFT0U4TmVSRm85eg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шурыгин - продолжать выгружать новинки в наш Яндекс.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:20.672Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "V2hGcXB5VDdWY2plY0NKOQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - если нужен VPN написать АВ.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:06.109Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "aFlCYjNLZjdabUJJRk1nRQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шурыгин - рекомендация SMM Planner со стоимостью.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:21.541Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "VnlPWVhHQVRkc2lUb0FOLQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - тест-драйв техники Аксон в Москве.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:07.079Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "Sm80SVB6UXlWalBjRjNRdQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шурыгин - разработать пост про тест-драйв для Sender.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:21.095Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "b1A4Tm56bkRlS0tYdmxFSw": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шишков - доделать личный кабинет для частных СА.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:16.625Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "SzViczU3X2xuLVpIUkwyYg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Орловецкий - проработать инкассацию в Москве.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:13.015Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "eFJBSjEtZDltTXF0RUpLUw": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Орловецкий - облагородить зону о новинках.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:11.225Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "WVp4VzRRRmtIRkZUbmEycQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шишков - вкладка истории ремонта в серийном номере техники.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:16.192Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "QndxUVdsZzZBMkM1bUJ4eA": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Орловецкий - продать машину в течение мая-июня.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:12.555Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "WE56NGFNeHBjM25ucHFQVg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шишков - завести Pixel 24 и синхро рент на парсер.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:17.076Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "eTdNODRzckhSbnBrclVKQg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Орловецкий - аудит ковров что ремонтировать что заменить.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:11.671Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "V3l6YmVyQXFVU09TWlNaSg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шишков - сделать видео по возврату денежных средств.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:18.891Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "cnNfbjliZG1OZHVQelZFSQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Орловецкий - тест по контрагентам Кинотехника Кинозавод.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:13.454Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "al9hTnFVTk40Z3BaZkR4Qw": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Орловецкий - постепенно вводить Орехова с 18.05 на совещание 19.05.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:12.099Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "em44dlFDQ3V1Wko1M0xkRA": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шишков - проконсультироваться с Тихомировой по приходникам.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:17.972Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "eURBbTVmcFpwWm02TUlOcg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шишков - разработчики переезжают на новый сервер.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:18.443Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "TlNzUExaUVMxdWFJQVMzNg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Орловецкий + Тихомирова - переход на НДФЛ 13% удержание (налоговый агент).md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:45:04.989Z",
+    "last_v_mtime": 1778827341.0
+  },
+  "bG0wWTNGektuUFpsUVZfMQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шишков - записать видео о закреплённых позициях.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:17.527Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "cFVVWDZfMnJlWkdqUzZxQQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Еремин - заказать оверхеды у Вебера.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:08.954Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "WWI4Z2tRYWNkRjB3bWNsRw": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шишков - сообщить разработчикам о некорректной выгрузке платёжек.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:19.336Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "dFVHNE10TFdCY0Fpd0xhaQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Еремин - попробовать найти трубы для закупки.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:09.422Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "elRSUUN2ckFVWUhtcnJ2eA": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шишков - финализировать отчёт о продажах для Тихомировой.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:19.769Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "bXlld3pwZk9BLTZmRlVDNg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Еремин - подвязать к аккаунту Ozon карту Совкомбанк.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:50:04.817Z",
+    "last_v_mtime": 1778827608.0
+  },
+  "Y0J6VWpNMDBpWV9yTVZOTQ": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Мухин - найти нового юриста.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:09.872Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "VW5FcDM5MVhSNkRjZW96Xw": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Мухин - уточнить у Ростелекома Ростов оптимальные тарифы.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:40:10.330Z",
+    "last_v_mtime": 1778827063.0
+  },
+  "U0FOQTVyVEkxcmp3UGVBVA": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шурыгин - регистрация в Макс канала и линий для обработки входящих.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-15T06:50:05.043Z",
+    "last_v_mtime": 1778827805.3207574
+  },
+  "dy1vbUJqWWNiY2dSelBaQg": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Разобрать совещание 14.05 на задачи и делегировать (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-15T06:55:04.631Z",
+    "last_v_mtime": 1778827811.0
+  },
+  "VWpBZzRBcC1DX0hUOEEtXw": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Поставить графин воды с утра (2026-05-15) (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-15T07:00:04.645Z",
+    "last_v_mtime": 1778828114.0
+  },
+  "cV92V2lUUlp4TXAyeDc3dQ": {
+    "path": "/volume1/obsidian/TaskNotes/На завтра/Посмотреть видео Шишкова - как посмотреть что и где закреплено.md",
+    "list": "На завтра",
+    "updated": "2026-05-15T07:00:04.144Z",
+    "last_v_mtime": 1778828403.6913593
+  },
+  "YlpkS0FBQ0owcDVJRl96eQ": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Изучить сайт https um.mos.ru (2026-05-15) (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-15T12:05:07.351Z",
+    "last_v_mtime": 1778846413.0
+  },
+  "U09neGdSWS14eTFkTzROQQ": {
+    "path": "/volume1/obsidian/TaskNotes/На завтра/Написать и вернуть деньги за БКС карту.md",
+    "list": "На завтра",
+    "updated": "2026-05-15T18:27:19.686Z",
+    "last_v_mtime": 1778869804.7995176
+  },
+  "NVRvUUxMTlZpUk1rbV9XSQ": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Актуализировать наличные и финансовые остатки в Excel (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-15T18:55:05.259Z",
+    "last_v_mtime": 1778871064.0
+  },
+  "dlJZZV8tTXpjaHBublRkMQ": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Проверить full-tunnel Tailscale через NAS или VPS как exit-node с телефона (2026-05-15) (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-15T18:55:05.648Z",
+    "last_v_mtime": 1778871064.0
   }
 }

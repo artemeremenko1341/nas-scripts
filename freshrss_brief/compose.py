@@ -184,10 +184,10 @@ def youtube_section(items, target_date):
             if vid_m:
                 f = yt_by_video_id.get(vid_m.group(1))
         if f:
-            wiki = f.stem.replace("|", "\\|")
+            rel = "Raw/youtube_transcripts/" + f.parent.name + "/" + urllib.parse.quote(f.name)
             yt_url = it.get("url") or it.get("link") or ""
             yt_part = " · [▶ YouTube](" + yt_url + ")" if yt_url else ""
-            lines.append("- 🟡 [[" + wiki + "|" + title + "]] — *Канал: " + feed + yt_part + "*")
+            lines.append("- 🟡 [" + title + "](" + rel + ") — *Канал: " + feed + yt_part + "*")
         else:
             lines.append("- 🟡 **[" + title + "](" + it["fresh_url"] + ")** — *Канал: " + feed + ". Транскрипт не найден локально, fallback на FreshRSS.*")
     lines.append("")
@@ -244,10 +244,10 @@ def podcast_section(items, target_date):
             if sp_m:
                 f = pod_by_episode_id.get(sp_m.group(1))
         if f:
-            wiki = f.stem.replace("|", "\\|")
+            rel = "Raw/podcast_transcripts/" + f.parent.name + "/" + urllib.parse.quote(f.name)
             ep_url = it.get("url") or it.get("link") or ""
             ep_part = " · [▶ Открыть оригинал](" + ep_url + ")" if ep_url else ""
-            lines.append("- 🟡 [[" + wiki + "|" + title + "]] — *Подкаст: " + feed + ep_part + "*")
+            lines.append("- 🟡 [" + title + "](" + rel + ") — *Подкаст: " + feed + ep_part + "*")
         else:
             lines.append("- 🟡 **[" + title + "](" + it["fresh_url"] + ")** — *Подкаст: " + feed + ". Транскрипт не найден локально, fallback на FreshRSS.*")
     lines.append("")
