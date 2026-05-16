@@ -47,6 +47,18 @@ def _refresh():
     json.dump(t, open(TOK, 'w'), indent=2)
     return t['access_token']
 
+
+KUMA_URL = "http://127.0.0.1:3001/api/push/pylePqndZYz0fGvrDQPu"
+
+def kuma_push(status, msg):
+    """Heartbeat to Uptime Kuma. Silent on failure (don't break sync run)."""
+    try:
+        import urllib.parse, urllib.request
+        url = f"{KUMA_URL}?status={status}&msg={urllib.parse.quote(str(msg)[:200])}&ping="
+        urllib.request.urlopen(url, timeout=6)
+    except Exception:
+        pass
+
 def gapi(path, method='GET', body=None, retried=False):
     tok = json.load(open(TOK))['access_token']
     url = 'https://tasks.googleapis.com/tasks/v1' + path
@@ -873,6 +885,7 @@ def main(dry=False):
         json.dump(state, open(STATE_FILE, 'w'), ensure_ascii=False, indent=2)
 
     log(f'Done. {actions}')
+    kuma_push('up', f'sync ok: {actions}')
 
 if __name__ == '__main__':
     dry = '--dry-run' in sys.argv
@@ -880,4 +893,5 @@ if __name__ == '__main__':
         main(dry=dry)
     except Exception as e:
         log(f'FATAL: {type(e).__name__}: {e}')
+        kuma_push('down', f'FATAL: {type(e).__name__}: {e}')
         raise

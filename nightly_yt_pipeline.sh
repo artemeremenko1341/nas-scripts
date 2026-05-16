@@ -1,4 +1,13 @@
 #!/bin/bash
+
+# === Kuma push (added 2026-05-16) ===
+KUMA_TOKEN="OCVd3tA8uVypChR8SoFY"
+kuma_push() {
+    local STATUS="$1"; local MSG="$2"
+    curl -sS -m 6 -G --data-urlencode "status=$STATUS" --data-urlencode "msg=$MSG" --data-urlencode "ping=" "http://127.0.0.1:3001/api/push/$KUMA_TOKEN" > /dev/null 2>&1 || true
+}
+trap 'rc=$?; if [ $rc -eq 0 ]; then kuma_push up "exit=0"; else kuma_push down "exit=$rc"; fi' EXIT
+
 # Ночной мастер сбора YT-транскриптов и подкастов.
 # Запускается в 01:00 МСК через DSM Task Scheduler.
 # Цикл: extract → transcripts × 4 (01:00, 02:30, 04:00, 05:00) → podcast.

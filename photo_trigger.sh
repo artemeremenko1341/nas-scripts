@@ -1,4 +1,13 @@
 #!/bin/bash
+
+# === Kuma push (added 2026-05-16) ===
+KUMA_TOKEN="oaYwszYap7RBSqvcuYQG"
+kuma_push() {
+    local STATUS="$1"; local MSG="$2"
+    curl -sS -m 6 -G --data-urlencode "status=$STATUS" --data-urlencode "msg=$MSG" --data-urlencode "ping=" "http://127.0.0.1:3001/api/push/$KUMA_TOKEN" > /dev/null 2>&1 || true
+}
+trap 'rc=$?; if [ $rc -eq 0 ]; then kuma_push up "exit=0"; else kuma_push down "exit=$rc"; fi' EXIT
+
 # photo_trigger.sh v2 — записывает новые фото в очередь для Rocky
 # Запускать каждую минуту через Task Scheduler
 
