@@ -27,9 +27,28 @@ if ! ./git-docker.sh commit -m "$MSG" >>"$LOG" 2>&1; then
 fi
 
 if ./git-docker.sh push origin main >>"$LOG" 2>&1; then
-    echo "pushed: $MSG" >> "$LOG"
-    push up "$MSG"
+    echo "github pushed: $MSG" >> "$LOG"
+    GITHUB_OK=1
 else
-    push down 'push failed'
+    echo "github push FAILED" >> "$LOG"
+    GITHUB_OK=0
+fi
+
+if ./git-docker.sh push forgejo main >>"$LOG" 2>&1; then
+    echo "forgejo pushed: $MSG" >> "$LOG"
+    FORGEJO_OK=1
+else
+    echo "forgejo push FAILED" >> "$LOG"
+    FORGEJO_OK=0
+fi
+
+if [ "$GITHUB_OK" = "1" ] && [ "$FORGEJO_OK" = "1" ]; then
+    push up "$MSG (both)"
+elif [ "$GITHUB_OK" = "1" ]; then
+    push up "$MSG (github only)"
+elif [ "$FORGEJO_OK" = "1" ]; then
+    push up "$MSG (forgejo only)"
+else
+    push down "both push failed"
     exit 1
 fi
