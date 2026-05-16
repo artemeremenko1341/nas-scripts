@@ -42,3 +42,6 @@ Thumbs.db
 
 # Whitelist - sync state (small JSON, useful as backup)
 !openclaw/data/tasknotes_sync_state.json
+openclaw/venv-reviews/
+**/venv-*/
+**/__pycache__/
