@@ -60,7 +60,12 @@ run "adesk_daily_save" python3 "$SCRIPTS/adesk_daily_save.py"
 run_capture "adesk_revenue" "adesk_revenue.txt" python3 "$SCRIPTS/adesk_revenue.py"
 run "weather" python3 "$SCRIPTS/weather.py"
 
-if run_capture "sheets_kpi" "sheets_kpi.txt" python3 "$SCRIPTS/sheets_kpi.py"; then
+# По понедельникам добавляем --trend для блока «Тренд 2026 г/г % по месяцам»
+SHEETS_KPI_ARGS=""
+if [ "$(date +%u)" = "1" ]; then
+    SHEETS_KPI_ARGS="--trend"
+fi
+if run_capture "sheets_kpi" "sheets_kpi.txt" python3 "$SCRIPTS/sheets_kpi.py" $SHEETS_KPI_ARGS; then
     push $TOK_SHEETS up OK
 else
     push $TOK_SHEETS down "exit=$?"
@@ -95,6 +100,10 @@ if run "daily_brief_compose" python3 "/volume1/homes/artemere-7601341/scripts/fr
 else
     push $TOK_BRIEF down "exit=$?"
 fi
+
+# Аудит TaskNotes ↔ Google Tasks связок (ежедневно).
+# Exit 0 = OK, exit 1 = drift. daily_collect не падает, файл в daily_data покажет статус.
+run_capture "tasknotes_audit" "tasknotes_audit.txt" python3 "$SCRIPTS/tasknotes_audit.py" || true
 
 if [ "$(date +%u)" = "1" ]; then
     run_capture "weekly_tax_brief" "weekly_tax_brief.txt" python3 "$SCRIPTS/weekly_tax_brief.py"
