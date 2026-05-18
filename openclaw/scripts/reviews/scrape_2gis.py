@@ -7,6 +7,10 @@ import sqlite3
 import sys
 import urllib.parse
 import urllib.request
+import urllib.error
+import socket
+import ssl
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -55,7 +59,7 @@ def content_hash(text, reply):
     return hashlib.sha256(((text or "") + "|" + (reply or "")).encode("utf-8")).hexdigest()[:16]
 
 
-def fetch_branch(firm_id):
+def fetch_branch(firm_id, max_attempts=3, backoff_seconds=5):
     params = {
         "limit": "50",
         "offset": "0",
@@ -71,9 +75,17 @@ def fetch_branch(firm_id):
         "User-Agent": "Mozilla/5.0",
         "Accept": "application/json",
     })
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        data = json.loads(resp.read())
-    return data.get("reviews", [])
+    last_err = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                data = json.loads(resp.read())
+            return data.get("reviews", [])
+        except (urllib.error.URLError, socket.timeout, ssl.SSLError) as e:
+            last_err = e
+            if attempt < max_attempts:
+                time.sleep(backoff_seconds)
+    raise last_err
 
 
 def upsert(conn, city, firm_id, rev, mark_baseline=False):
