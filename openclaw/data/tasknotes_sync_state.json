@@ -251,12 +251,6 @@
     "updated": "2026-05-11T10:42:17.440Z",
     "last_v_mtime": 1778673839.0
   },
-  "R25TNldxTWp3NEMxVkdYcg": {
-    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Еремин - купить 1 небрендированную трубу для тележки-долли.md",
-    "list": "Жду ответа",
-    "updated": "2026-05-13T12:10:36.387Z",
-    "last_v_mtime": 1778673839.0
-  },
   "cWt5RkQzVVNuVlpjWmxJZQ": {
     "path": "/volume1/obsidian/TaskNotes/Жду ответа/Мухин - план майских перемещений и запрет выходных.md",
     "list": "Жду ответа",
@@ -268,12 +262,6 @@
     "list": "Сделанные",
     "updated": "2026-05-11T10:42:16.807Z",
     "last_v_mtime": 1778673839.0
-  },
-  "RUFzOGsxTVFQT2xfN3BKUw": {
-    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Орловецкий - тест раздельных контрагентов.md",
-    "list": "Жду ответа",
-    "updated": "2026-05-13T17:20:08.773Z",
-    "last_v_mtime": 1778692797.0
   },
   "Q255WkFmbzg4MWtHZ1FkSQ": {
     "path": "/volume1/obsidian/TaskNotes/На завтра/Сбер дебет (не зачисляется, неправильный остаток РС АВ) — ждёт 1) Шишков закроет подключение Сбера 2.md",
@@ -724,12 +712,6 @@
     "updated": "2026-05-14T17:25:07.843Z",
     "last_v_mtime": 1778779502.1426623
   },
-  "LW5DcWRCbGptdGpXUngxbg": {
-    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шишков неправильный статус платежек в 1С после полной оплаты.md",
-    "list": "Жду ответа",
-    "updated": "2026-05-14T17:20:05.458Z",
-    "last_v_mtime": 1778779202.0448368
-  },
   "Yzh1TXhlVFlienZEbXNYeQ": {
     "path": "/volume1/obsidian/TaskNotes/На завтра/Купить салфетки на Озон.md",
     "list": "На завтра",
@@ -1090,12 +1072,6 @@
     "updated": "2026-05-15T06:40:08.954Z",
     "last_v_mtime": 1778827063.0
   },
-  "WWI4Z2tRYWNkRjB3bWNsRw": {
-    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Шишков - сообщить разработчикам о некорректной выгрузке платёжек.md",
-    "list": "Жду ответа",
-    "updated": "2026-05-15T06:40:19.336Z",
-    "last_v_mtime": 1778827063.0
-  },
   "dFVHNE10TFdCY0Fpd0xhaQ": {
     "path": "/volume1/obsidian/TaskNotes/Жду ответа/Еремин - попробовать найти трубы для закупки.md",
     "list": "Жду ответа",
@@ -1108,22 +1084,10 @@
     "updated": "2026-05-15T06:40:19.769Z",
     "last_v_mtime": 1778827063.0
   },
-  "bXlld3pwZk9BLTZmRlVDNg": {
-    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Еремин - подвязать к аккаунту Ozon карту Совкомбанк.md",
-    "list": "Жду ответа",
-    "updated": "2026-05-15T06:50:04.817Z",
-    "last_v_mtime": 1778827608.0
-  },
   "Y0J6VWpNMDBpWV9yTVZOTQ": {
     "path": "/volume1/obsidian/TaskNotes/Жду ответа/Мухин - найти нового юриста.md",
     "list": "Жду ответа",
     "updated": "2026-05-15T06:40:09.872Z",
-    "last_v_mtime": 1778827063.0
-  },
-  "VW5FcDM5MVhSNkRjZW96Xw": {
-    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Мухин - уточнить у Ростелекома Ростов оптимальные тарифы.md",
-    "list": "Жду ответа",
-    "updated": "2026-05-15T06:40:10.330Z",
     "last_v_mtime": 1778827063.0
   },
   "U0FOQTVyVEkxcmp3UGVBVA": {
@@ -1437,5 +1401,95 @@
     "list": "На сегодня",
     "updated": "2026-05-18T03:07:42.617Z",
     "last_v_mtime": 1779073728.0959513
+  },
+  "Tk9BVEVYQ3NGOFlzY3FDRw": {
+    "path": "/volume1/obsidian/TaskNotes/Идеи/Сделать когортный треугольник по retention в дилайте по клиентам (идея 1 от 2026.md",
+    "list": "Идеи",
+    "updated": "2026-05-18T06:18:10.055Z",
+    "last_v_mtime": 1779085150.7886248
+  },
+  "aERQV21Ea3E1SllWbDZ0eA": {
+    "path": "/volume1/obsidian/TaskNotes/Идеи/Сделать ресерч, что могу автомитизировать через n8n - adj 1 от 2026-05-18.md",
+    "list": "Идеи",
+    "updated": "2026-05-18T06:27:21.147Z",
+    "last_v_mtime": 1779085663.9062169
+  },
+  "cnhCbXZJWmhqampvRjdPYw": {
+    "path": "/volume1/obsidian/TaskNotes/Идеи/Запустить клода в 1С.md",
+    "list": "Идеи",
+    "updated": "2026-05-18T06:28:25.106Z",
+    "last_v_mtime": 1779085728.0454159
+  },
+  "aHVibjNfRWctVDRyMnpydg": {
+    "path": "/volume1/obsidian/TaskNotes/Идеи/Personal AI tutors для личного использования в 2026-05-18.md",
+    "list": "Идеи",
+    "updated": "2026-05-18T06:51:42.326Z",
+    "last_v_mtime": 1779087139.4558778
+  },
+  "UzZMV3VtZFZzeG9DOXdQbA": {
+    "path": "/volume1/obsidian/TaskNotes/Идеи/SME buy and build - базовая отчетность, научиться считать на базе - Владислав Ер.md",
+    "list": "Идеи",
+    "updated": "2026-05-18T06:52:43.524Z",
+    "last_v_mtime": 1779087203.6250827
+  },
+  "cG93RGNYRHhqR1h1R1ZfZA": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Шишков - сообщить разработчикам о некорректной выгрузке платёжек (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-18T08:32:14.565Z",
+    "last_v_mtime": 1779093148.365328
+  },
+  "cDJPQ2hJZ3BmdGl5M0c3Vg": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Шишков - неправильный статус платежек в 1С после полной оплаты (закрыто 2026-05-18) (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-18T08:33:47.779Z",
+    "last_v_mtime": 1779093276.70973
+  },
+  "cW1lN21HdFp6QWpqb2JtNw": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Еремин - подвязать к аккаунту Ozon карту Совкомбанк (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-18T08:40:32.168Z",
+    "last_v_mtime": 1779093661.8569362
+  },
+  "N3FtOU1CdDhvZFoybXd5Xw": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Орловецкий - тест раздельных контрагентов (дубль закрыт 2026-05-18) (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-18T08:41:52.778Z",
+    "last_v_mtime": 1779093726.0381372
+  },
+  "WjZqTlZJRUkzWTFvZUNUeA": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Еремин - купить 1 небрендированную трубу для тележки-долли (дубль закрыт 2026-05-18) (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-18T08:44:42.673Z",
+    "last_v_mtime": 1779093918.5177398
+  },
+  "dlpFalVxd2M0TDNPZi1oaw": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Мухин - уточнить у Ростелекома Ростов оптимальные тарифы (дубль закрыт 2026-05-18) (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-18T08:44:43.457Z",
+    "last_v_mtime": 1779093918.51874
+  },
+  "aXhMUzZ2c1kyUmxwdTc4TA": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Написать и вернуть деньги за BCC карту.md",
+    "list": "Жду ответа",
+    "updated": "2026-05-18T09:56:48.676Z",
+    "last_v_mtime": 1779098212.1514792
+  },
+  "dkdIdEhWX0hWLWpYaE1CeQ": {
+    "path": "/volume1/obsidian/TaskNotes/Идеи/TEST list-move daemon (delete me).md",
+    "list": "Идеи",
+    "updated": "2026-05-18T10:10:42.471Z",
+    "last_v_mtime": 1779099423.6583147
+  },
+  "ZU1iLXJRa3RDYzFCbENEMg": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/TEST list-move daemon (delete me).md",
+    "list": "Жду ответа",
+    "updated": "2026-05-18T10:13:05.785Z",
+    "last_v_mtime": 1779099668.9270902
+  },
+  "cXMwXzdMTzk2WkhOVEtSMA": {
+    "path": "/volume1/obsidian/TaskNotes/Жду ответа/TEST list-move daemon (delete me).md",
+    "list": "Жду ответа",
+    "updated": "2026-05-18T10:21:08.464Z",
+    "last_v_mtime": 1779099668.9270902
   }
 }

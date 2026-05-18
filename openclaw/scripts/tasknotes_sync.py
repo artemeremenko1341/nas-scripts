@@ -752,6 +752,50 @@ def main(dry=False):
                 log(f'move_done (deleted in google): {v["path"].name} -> Сделанные/')
             continue
 
+        # Folder-move handler (added 2026-05-18): sync list change initiated in vault.
+        # If neither side is 'Сделанные' and folder differs from Google list — resolve.
+        if (v['folder'] != g['list_name']
+                and v['folder'] != DONE_LIST
+                and g['list_name'] != DONE_LIST
+                and g['status'] != 'completed'):
+            state_list = state.get(gid, {}).get('list')
+            vault_moved = (state_list is not None and v['folder'] != state_list)
+            google_moved = (state_list is not None and g['list_name'] != state_list)
+            # Decide direction: vault wins unless only google moved.
+            do_push = True
+            if google_moved and not vault_moved:
+                do_push = False  # let pull_update handle it
+            elif vault_moved and google_moved:
+                # Both sides moved since last sync — newer mtime wins.
+                v_ts_lm = v['mtime']
+                g_ts_lm = parse_iso(g['updated'])
+                if g_ts_lm > v_ts_lm:
+                    do_push = False
+                log(f'list_move CONFLICT: vault={v["folder"]} google={g["list_name"]} state={state_list} → {"push" if do_push else "pull"}')
+            if do_push:
+                if dry:
+                    log(f'[DRY] list_move push: {v["path"].name} {g["list_name"]} -> {v["folder"]}')
+                    actions['push_update'] += 1
+                    continue
+                try:
+                    new_lid = list_map.get(v['folder'])
+                    if not new_lid:
+                        log(f'WARN list_move: no Google list for {v["folder"]}')
+                    else:
+                        body = md_to_google_body(v['fm'], v['body'], v['folder'], v['path'])
+                        new_t = gapi(f'/lists/{new_lid}/tasks', 'POST', body)
+                        gapi(f'/lists/{g["list_id"]}/tasks/{gid}', 'DELETE')
+                        v['fm']['google_task_id'] = new_t['id']
+                        v['fm']['google_list'] = v['folder']
+                        write_md(v['path'], v['fm'], v['body'])
+                        state.pop(gid, None)
+                        state[new_t['id']] = {'path': str(v['path']), 'list': v['folder'], 'updated': new_t.get('updated', '')}
+                        actions['push_update'] += 1
+                        log(f'list_move push: {v["path"].name} {g["list_name"]} -> {v["folder"]} (new gid {new_t["id"]})')
+                        continue
+                except Exception as e:
+                    log(f'FAIL list_move {v["path"].name}: {e}')
+
         v_done = fm_status_done(v['fm'])
         g_done = (g['status'] == 'completed')
 
