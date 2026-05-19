@@ -28,7 +28,9 @@ DONE_LIST = 'Сделанные'
 
 # Folder ↔ TaskNotes plugin status — теперь identity (status в frontmatter = русское название = folder name)
 FOLDER_TO_STATUS = {f: f for f in LISTS}
-STATUS_TO_FOLDER = {f: f for f in LISTS}
+# Lowercase keys (matches `.lower()` normalization in desired_folder_from_status / fm_status_done).
+# Was: {f: f for f in LISTS} — case-mismatch bug, status_move silently never triggered (2026-05-19 fix).
+STATUS_TO_FOLDER = {f.lower(): f for f in LISTS}
 
 # ---------- Google API ----------
 def _refresh():
@@ -646,7 +648,25 @@ def main(dry=False):
     g_by_id = {g['id']: g for g in google}
     v_by_gid = {v['fm'].get('google_task_id'): v for v in vault if v['fm'].get('google_task_id')}
 
-    actions = {'push_new': 0, 'push_update': 0, 'pull_new': 0, 'pull_update': 0, 'complete': 0, 'move_done': 0, 'noop': 0}
+    # DEDUP indices (added 2026-05-19): prevent race-condition duplicates when Edit/mv races vs push_new.
+    # Index Google tasks by normalized title — active OR recently-closed (last 7 days).
+    import time as _time
+    _cutoff = _time.time() - 7 * 86400
+    g_by_norm_title = {}
+    for _g in google:
+        if _g['status'] == 'needsAction' or parse_iso(_g.get('updated', '')) > _cutoff:
+            _nt = _norm_title(_g['title'])
+            if _nt:
+                g_by_norm_title.setdefault(_nt, []).append(_g)
+    # Index ALL vault files by normalized title (for pull_new dedup — handles both
+    # race-condition (no gid) and historical id-drift (orphan gid not in Google)).
+    v_by_norm_title = {}
+    for _v in vault:
+        _nt = _norm_title(_v['fm'].get('title', '') or _v['path'].stem)
+        if _nt:
+            v_by_norm_title.setdefault(_nt, []).append(_v)
+
+    actions = {'push_new': 0, 'push_update': 0, 'pull_new': 0, 'pull_update': 0, 'complete': 0, 'move_done': 0, 'noop': 0, 'dedup_push': 0, 'dedup_pull': 0}
 
     # 1) Vault files without google_task_id -> CREATE in Google
     for v in vault:
@@ -657,6 +677,26 @@ def main(dry=False):
         list_id = list_map.get(v['folder'])
         if not list_id:
             log(f'WARN no Google list for folder {v["folder"]}')
+            continue
+        # DEDUP push_new: if Google already has task with same title (active or recently-closed),
+        # rebind gid to existing instead of creating a duplicate.
+        title_norm = _norm_title(v['fm'].get('title', '') or v['path'].stem)
+        existing_g = g_by_norm_title.get(title_norm, [])
+        if existing_g:
+            # Prefer match in same folder; else any active; else first.
+            prefer = next((_g for _g in existing_g if _g['list_name'] == v['folder']), None)
+            if not prefer:
+                prefer = next((_g for _g in existing_g if _g['status'] == 'needsAction'), existing_g[0])
+            v['fm']['google_task_id'] = prefer['id']
+            v['fm']['google_list'] = prefer['list_name']
+            if 'tags' not in v['fm']:
+                v['fm']['tags'] = '[task]'
+            if not dry:
+                write_md(v['path'], v['fm'], v['body'])
+                state[prefer['id']] = {'path': str(v['path']), 'list': prefer['list_name'], 'updated': prefer.get('updated', '')}
+            v_by_gid[prefer['id']] = v
+            actions['dedup_push'] += 1
+            log(f'push_new DEDUP: {v["path"].name} matched existing Google id={prefer["id"]} in {prefer["list_name"]} (no new task created)')
             continue
         body = md_to_google_body(v['fm'], v['body'], v['folder'], v['path'])
         if dry:
@@ -691,6 +731,109 @@ def main(dry=False):
     # 2) Google tasks without vault file -> CREATE in vault
     for g in google:
         if g['id'] in v_by_gid:
+            continue
+        # DEDUP pull_new: if vault already has a file with same title — rebind gid instead of creating a duplicate file.
+        # Priority 1 (P1): file WITHOUT gid (race-condition case).
+        # Priority 2 (P2): file with ORPHAN gid (gid not in current Google scan = task gone). Allowed combinations:
+        #   (a) same folder as incoming Google list (historical id-drift),
+        #   (b) ACTIVE→ACTIVE (both _v.folder and g.list_name are non-DONE) — user moved task via Google UI,
+        #       which Google models as DELETE+POST with new gid. Recast and physically move file to new folder.
+        # Priority 3 (P3): file in DONE_LIST with ORPHAN gid AND filename has move_done-artifact marker
+        #   ((orphan)/(done) suffix), AND incoming Google task is in ACTIVE folder. This is an artifact of
+        #   a previous move_done that fired during sync race — NOT a true closure. Recast + physically move
+        #   file back to active folder (stripping the artifact suffix from filename).
+        # Refuse otherwise: ACTIVE→DONE or DONE→ACTIVE without artifact marker (different lifecycle).
+        title_norm = _norm_title(g['title'])
+        existing_v = v_by_norm_title.get(title_norm, [])
+        ACTIVE_FOLDERS = {f for f in LISTS if f != DONE_LIST}
+        ARTIFACT_SUFFIXES = (' (orphan)', ' (done)', ' (moved)')
+        candidate = None
+        candidate_move_to = None        # if folders differ, target folder for physical rename
+        candidate_strip_suffix = False  # if True, strip artifact suffix from filename on move
+        recast_kind = None              # for logging
+        # P1: no gid yet
+        for _v in existing_v:
+            if not _v['fm'].get('google_task_id'):
+                candidate = _v
+                recast_kind = 'P1-no-gid'
+                break
+        # P2: orphan gid — same folder OR active-to-active
+        if candidate is None:
+            for _v in existing_v:
+                gid_v = _v['fm'].get('google_task_id')
+                if not gid_v or gid_v in g_by_id:
+                    continue
+                same_folder = (_v['folder'] == g['list_name'])
+                both_active = (_v['folder'] in ACTIVE_FOLDERS and g['list_name'] in ACTIVE_FOLDERS)
+                if same_folder:
+                    candidate = _v
+                    recast_kind = 'P2-same-folder'
+                    break
+                if both_active:
+                    candidate = _v
+                    candidate_move_to = g['list_name']
+                    recast_kind = 'P2-active-to-active'
+                    break
+        # P3: orphan gid in DONE with artifact-suffix marker → artifact rescue
+        if candidate is None and g['list_name'] in ACTIVE_FOLDERS:
+            for _v in existing_v:
+                gid_v = _v['fm'].get('google_task_id')
+                if not gid_v or gid_v in g_by_id:
+                    continue
+                if _v['folder'] != DONE_LIST:
+                    continue
+                stem = _v['path'].stem
+                if any(stem.endswith(sfx) for sfx in ARTIFACT_SUFFIXES):
+                    candidate = _v
+                    candidate_move_to = g['list_name']
+                    candidate_strip_suffix = True
+                    recast_kind = 'P3-done-artifact-rescue'
+                    break
+        if candidate is not None:
+            old_gid = candidate['fm'].get('google_task_id')
+            # Physical move if needed (P2 active-to-active or P3 artifact rescue)
+            if candidate_move_to and candidate_move_to != candidate['folder']:
+                target_dir = ROOT / candidate_move_to
+                target_dir.mkdir(parents=True, exist_ok=True)
+                src_path = candidate['path']
+                # Compute target filename (optionally strip artifact suffix)
+                stem = src_path.stem
+                if candidate_strip_suffix:
+                    for sfx in ARTIFACT_SUFFIXES:
+                        if stem.endswith(sfx):
+                            stem = stem[:-len(sfx)]
+                            break
+                target = target_dir / (stem + '.md')
+                if not target.exists():
+                    if not dry:
+                        src_path.rename(target)
+                    candidate['path'] = target
+                    candidate['folder'] = candidate_move_to
+                else:
+                    # Fallback: keep original filename in target folder
+                    fallback = target_dir / src_path.name
+                    if not fallback.exists():
+                        if not dry:
+                            src_path.rename(fallback)
+                        candidate['path'] = fallback
+                        candidate['folder'] = candidate_move_to
+                        log(f'pull_new DEDUP ({recast_kind}): target exists, used fallback name {fallback.name}')
+                    else:
+                        log(f'pull_new DEDUP ({recast_kind}): both target and fallback exist, staying in {candidate["folder"]}')
+            candidate['fm']['google_task_id'] = g['id']
+            candidate['fm']['google_list'] = g['list_name']
+            candidate['fm']['status'] = candidate['folder']  # keep status in sync with folder
+            if 'tags' not in candidate['fm']:
+                candidate['fm']['tags'] = '[task]'
+            if not dry:
+                write_md(candidate['path'], candidate['fm'], candidate['body'])
+                state[g['id']] = {'path': str(candidate['path']), 'list': candidate['folder'], 'updated': g.get('updated', '')}
+                if old_gid and old_gid in state:
+                    state.pop(old_gid, None)
+            v_by_gid[g['id']] = candidate
+            actions['dedup_pull'] += 1
+            old_gid_repr = old_gid or 'none'
+            log(f'pull_new DEDUP ({recast_kind}, old_gid={old_gid_repr}): vault has {candidate["path"].name}; bound new gid={g["id"]} (no new file created)')
             continue
         # If completed in non-Done list, route to Сделанные/ + relocate in Google
         if g['status'] == 'completed' and g['list_name'] != DONE_LIST:

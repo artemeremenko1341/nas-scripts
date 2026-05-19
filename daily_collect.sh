@@ -59,6 +59,7 @@ echo "=== Daily collect started $(date -Iseconds) ===" > "$LOG"
 run "adesk_daily_save" python3 "$SCRIPTS/adesk_daily_save.py"
 run_capture "adesk_revenue" "adesk_revenue.txt" python3 "$SCRIPTS/adesk_revenue.py"
 run "weather" python3 "$SCRIPTS/weather.py"
+run "health_collect" python3 "$SCRIPTS/health_collect.py"
 
 # По понедельникам добавляем --trend для блока «Тренд 2026 г/г % по месяцам»
 SHEETS_KPI_ARGS=""
