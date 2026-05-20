@@ -832,22 +832,10 @@
     "updated": "2026-05-16T18:44:47.404Z",
     "last_v_mtime": 1779129112.2252452
   },
-  "NDF2UlpsaXBBQkdzLW1JSg": {
-    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - тестируем направления Ozon.md",
-    "list": "Жду ответа",
-    "updated": "2026-05-15T06:40:22.909Z",
-    "last_v_mtime": 1778827101.0
-  },
   "aFZKdlM3QzZTeVJoMDh6bw": {
     "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - с 18.05 Орехов руководителем склада.md",
     "list": "Жду ответа",
     "updated": "2026-05-15T06:40:07.552Z",
-    "last_v_mtime": 1778827063.0
-  },
-  "bzA2QWZFNnI5STVSeEdPSA": {
-    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - открыта услуга ночная выдача.md",
-    "list": "Жду ответа",
-    "updated": "2026-05-15T06:40:06.583Z",
     "last_v_mtime": 1778827063.0
   },
   "MWNkWm9pYms2ZlA4d3prcQ": {
@@ -860,12 +848,6 @@
     "path": "/volume1/obsidian/TaskNotes/Жду ответа/Попов - расписать выдачу в городах без представительства.md",
     "list": "Жду ответа",
     "updated": "2026-05-15T06:40:15.276Z",
-    "last_v_mtime": 1778827063.0
-  },
-  "RTUxMDBQazZoTGpQS2JYdw": {
-    "path": "/volume1/obsidian/TaskNotes/Жду ответа/Все - если в АКБ отошёл пластик подклеиваем.md",
-    "list": "Жду ответа",
-    "updated": "2026-05-15T06:40:05.665Z",
     "last_v_mtime": 1778827063.0
   },
   "MzQweUVESlRiUUZLd0lBcA": {
@@ -1528,12 +1510,6 @@
     "updated": "2026-05-19T11:58:10.595Z",
     "last_v_mtime": 1779191889.1280143
   },
-  "QzRvLUozX1hzX2V6Q3NFdw": {
-    "path": "/volume1/obsidian/TaskNotes/На завтра/Выдача по городам где не представлены - прочитать материалы Попова.md",
-    "list": "На завтра",
-    "updated": "2026-05-19T11:58:25.853Z",
-    "last_v_mtime": 1779191905.0130632
-  },
   "Y3B5NTRtNmowNkQ3NjN2Mw": {
     "path": "/volume1/obsidian/TaskNotes/Недельные планы/SMM-планер 10 800 ₽ в год - решение покупать или нет.md",
     "list": "Недельные планы",
@@ -1563,5 +1539,41 @@
     "list": "Сделанные",
     "updated": "2026-05-19T17:31:06.970Z",
     "last_v_mtime": 1779211841.0
+  },
+  "b3FaM0tVcUVrX20wcXpQRA": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Выдача по городам где не представлены - прочитать материалы Попова (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-20T06:16:04.347Z",
+    "last_v_mtime": 1779257779.0
+  },
+  "bEpzZUZMb0RQTERROWNzRQ": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Все - тестируем направления Ozon (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-20T06:23:45.971Z",
+    "last_v_mtime": 1779258291.4852748
+  },
+  "NUdDUDBMVFdUZHJUaTIwNw": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Все - тестируем направления Ozon.md",
+    "list": "Сделанные",
+    "updated": "2026-05-20T06:32:09.563Z",
+    "last_v_mtime": 1779258725.0
+  },
+  "cHBHWHFHeDdRa0xobTVFZA": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Все - открыта услуга ночная выдача (done).md",
+    "list": "Сделанные",
+    "updated": "2026-05-20T06:38:58.123Z",
+    "last_v_mtime": 1779259255.5762694
+  },
+  "c04tbEpsQjhDZjRkQW00Rg": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Все - если в АКБ отошёл пластик подклеиваем.md",
+    "list": "Сделанные",
+    "updated": "2026-05-20T06:48:10.594Z",
+    "last_v_mtime": 1779259589.0
+  },
+  "UnNmTVJKWURyR3hHLVZKdw": {
+    "path": "/volume1/obsidian/TaskNotes/Сделанные/Все если в АКБ отошёл пластик подклеиваем.md",
+    "list": "Сделанные",
+    "updated": "2026-05-20T06:47:21.397Z",
+    "last_v_mtime": 1779259589.0
   }
 }

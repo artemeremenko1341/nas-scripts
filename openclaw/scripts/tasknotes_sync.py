@@ -11,9 +11,35 @@ Missing in Google (was deleted there): move .md -> Сделанные/ (no actua
 
 State: ~/scripts/openclaw/data/tasknotes_sync_state.json (по google_task_id).
 """
-import os, sys, json, re, urllib.request, urllib.parse, urllib.error
+import os, sys, json, re, time, urllib.request, urllib.parse, urllib.error
 from pathlib import Path
 from datetime import datetime
+
+# Race-condition guard (added 2026-05-20 after Ozon-task double-POST incident).
+# After this script creates a task in Google (via complete / push_new / relocate),
+# the NEXT cycle's scan_google() can return that fresh task as "new from Google"
+# if write_md/state.save didn't flush before the next sync_once started. Result:
+# pull_new creates a duplicate file or rebinds gid; subsequent paired-sync
+# triggers another DELETE+POST → second duplicate in Google.
+# Fix: tag every gid we just created with `_created_by_us_ts` in state. In
+# pull_new and paired-sync, if the gid is < SELF_CREATED_TTL seconds old AND
+# tagged by us, skip it (let the file/state catch up on next cycle).
+SELF_CREATED_TTL = 90  # seconds
+
+
+def _mark_self_created(state, gid):
+    """Stamp a gid as just-created by us. Call after any POST to Google."""
+    if gid in state and isinstance(state[gid], dict):
+        state[gid]['_created_by_us_ts'] = time.time()
+
+
+def _is_recent_self_created(state, gid):
+    """True if we created this gid less than SELF_CREATED_TTL seconds ago."""
+    s = state.get(gid)
+    if not isinstance(s, dict):
+        return False
+    ts = s.get('_created_by_us_ts', 0)
+    return bool(ts) and (time.time() - ts) < SELF_CREATED_TTL
 
 VAULT = Path('/volume1/obsidian')
 ROOT = VAULT / 'TaskNotes'
@@ -666,7 +692,44 @@ def main(dry=False):
         if _nt:
             v_by_norm_title.setdefault(_nt, []).append(_v)
 
-    actions = {'push_new': 0, 'push_update': 0, 'pull_new': 0, 'pull_update': 0, 'complete': 0, 'move_done': 0, 'noop': 0, 'dedup_push': 0, 'dedup_pull': 0}
+    actions = {'push_new': 0, 'push_update': 0, 'pull_new': 0, 'pull_update': 0, 'complete': 0, 'move_done': 0, 'noop': 0, 'dedup_push': 0, 'dedup_pull': 0, 'rescue_no_gid': 0}
+
+    # Step 0 (added 2026-05-20): RESCUE files without gid using state.json by basename.
+    # Why: user (or Claude) manually moves file between folders (e.g. На сегодня -> Сделанные)
+    # WITHOUT first adding gid to frontmatter. Without gid the file becomes a "ghost":
+    # push_new in step 1 is skipped for DONE folder; pull_new P1-no-gid in step 2 doesn't
+    # fire in many edge cases (title normalization, Google already-closed task, etc).
+    # Result: file sits forever without gid, Google task stuck in old list.
+    # Fix: BEFORE all steps, walk vault, for each file without gid look up state.json
+    # by FILENAME (basename) — state preserves last-known path per gid even after mv.
+    # If a match is found: write gid into frontmatter, update state path. Subsequent steps
+    # (move_done, push_update, etc.) then handle the file normally.
+    # Trade-off: filename-only match can collide if two tasks have identical filenames in
+    # different folders. We disambiguate by preferring exact-path match first.
+    for v in vault:
+        if v['fm'].get('google_task_id'):
+            continue
+        target_name = v['path'].name
+        matches = [(gid, st) for gid, st in state.items()
+                   if isinstance(st, dict) and st.get('path') and Path(st['path']).name == target_name]
+        if not matches:
+            continue
+        exact = [(gid, st) for gid, st in matches if st.get('path') == str(v['path'])]
+        gid, st = (exact[0] if exact else matches[0])
+        # Skip if this gid is already bound to another vault file (defensive)
+        if gid in v_by_gid:
+            continue
+        v['fm']['google_task_id'] = gid
+        if 'google_list' not in v['fm'] and st.get('list'):
+            v['fm']['google_list'] = st['list']
+        if 'tags' not in v['fm']:
+            v['fm']['tags'] = '[task]'
+        if not dry:
+            write_md(v['path'], v['fm'], v['body'])
+            state[gid]['path'] = str(v['path'])
+        v_by_gid[gid] = v
+        actions['rescue_no_gid'] += 1
+        log(f'rescue_no_gid: bound {target_name} -> gid={gid} (state.path was {st.get("path")})')
 
     # 1) Vault files without google_task_id -> CREATE in Google
     for v in vault:
@@ -713,6 +776,7 @@ def main(dry=False):
                 v['fm']['tags'] = '[task]'
             write_md(v['path'], v['fm'], v['body'])
             state[new_t['id']] = {'path': str(v['path']), 'list': v['folder'], 'updated': new_t.get('updated', '')}
+            _mark_self_created(state, new_t['id'])
             # FIX 2026-05-13: keep g_by_id consistent after push_new so step 3 (paired) does not treat just-created task as deleted-in-google
             g_by_id[new_t['id']] = {
                 'id': new_t['id'],
@@ -731,6 +795,13 @@ def main(dry=False):
     # 2) Google tasks without vault file -> CREATE in vault
     for g in google:
         if g['id'] in v_by_gid:
+            continue
+        # Race guard (added 2026-05-20): if we created this gid in the previous
+        # cycle (< SELF_CREATED_TTL ago), the vault file may not have flushed
+        # its frontmatter yet. Skip — let the file/state catch up, this gid
+        # will appear in paired-sync next cycle through v_by_gid normally.
+        if _is_recent_self_created(state, g['id']):
+            actions['noop'] += 1
             continue
         # DEDUP pull_new: if vault already has a file with same title — rebind gid instead of creating a duplicate file.
         # Priority 1 (P1): file WITHOUT gid (race-condition case).
@@ -857,9 +928,35 @@ def main(dry=False):
             log(f'[DRY] pull_new: {g["title"][:40]} -> {target_folder}/')
             actions['pull_new'] += 1
             continue
+        # Stale-vault guard (added 2026-05-20 after night-issuance incident).
+        # If a file with the expected basename ALREADY exists somewhere in vault
+        # (e.g. just moved by user/script via mv but cached vault scan didn't pick
+        # it up — SynologyDrive sync latency, NFS caching, race with daemon's own
+        # write_md, etc.) — skip creating a new file. Direct rglob hits live FS,
+        # bypassing the cached `vault` list. On the next cycle the file will be
+        # in `vault` and paired normally via gid; no duplicates created.
+        # Check two candidate basenames: (a) what we WOULD name the file from
+        # current Google title, (b) basename last recorded in state for this gid.
+        target_bn = safe_filename(g['title']) + '.md'
+        state_bn = None
+        _s = state.get(g['id'])
+        if isinstance(_s, dict):
+            sp = _s.get('path')
+            if sp:
+                state_bn = Path(sp).name
+        existing_paths = []
+        seen = set()
+        for check_bn in (target_bn, state_bn):
+            if check_bn and check_bn not in seen:
+                seen.add(check_bn)
+                existing_paths.extend(ROOT.rglob(check_bn))
+        if existing_paths:
+            actions['noop'] += 1
+            log(f'pull_new SKIP (stale-vault): file "{existing_paths[0].name}" exists at {existing_paths[0].relative_to(ROOT)} - vault scan was stale, deferring to next cycle')
+            continue
         fm = google_to_md_fm(g)
         body = g['notes'] or ''
-        fname = safe_filename(g['title']) + '.md'
+        fname = target_bn
         path = target_dir / fname
         i = 2
         while path.exists():
@@ -874,6 +971,14 @@ def main(dry=False):
     for v in list(vault):
         gid = v['fm'].get('google_task_id')
         if not gid:
+            continue
+        # Race guard (added 2026-05-20): freshly self-created gids might still
+        # have a partially-flushed vault file (just rebound from old gid). Skip
+        # the paired comparison for SELF_CREATED_TTL seconds — paired logic
+        # will pick this gid up cleanly on the next cycle once state and
+        # frontmatter are coherent.
+        if _is_recent_self_created(state, gid):
+            actions['noop'] += 1
             continue
         g = g_by_id.get(gid)
         if g is None:
@@ -933,6 +1038,7 @@ def main(dry=False):
                         write_md(v['path'], v['fm'], v['body'])
                         state.pop(gid, None)
                         state[new_t['id']] = {'path': str(v['path']), 'list': v['folder'], 'updated': new_t.get('updated', '')}
+                        _mark_self_created(state, new_t['id'])
                         actions['push_update'] += 1
                         log(f'list_move push: {v["path"].name} {g["list_name"]} -> {v["folder"]} (new gid {new_t["id"]})')
                         continue
@@ -965,6 +1071,8 @@ def main(dry=False):
                 v['fm']['google_list'] = DONE_LIST
                 write_md(target, v['fm'], v['body'])
                 state[new_gid] = {'path': str(target), 'list': DONE_LIST, 'updated': datetime.now().isoformat()}
+                if new_gid != gid:
+                    _mark_self_created(state, new_gid)
                 actions['complete'] += 1
                 log(f'complete: {v["path"].name} -> Сделанные/')
             except Exception as e:
@@ -999,6 +1107,8 @@ def main(dry=False):
                     log(f'WARN move_done: google relocate failed: {e}')
             write_md(target, v['fm'], v['body'])
             state[new_gid] = {'path': str(target), 'list': DONE_LIST, 'updated': g['updated']}
+            if new_gid != gid:
+                _mark_self_created(state, new_gid)
             actions['move_done'] += 1
             log(f'move_done (completed in google): {v["path"].name} -> Сделанные/ (+ Google relocated)')
             continue
